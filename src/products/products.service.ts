@@ -26,6 +26,19 @@ export class ProductsService {
     return this.productsRepository.save(product);
   }
 
+  async uploadImage(id: number, file: Express.MulterFile): Promise<Product> {
+    const product = await this.productsRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+
+    if (file) {
+      product.image = file.buffer;
+    }
+
+    return this.productsRepository.save(product);
+  }
+
   findAll(): Promise<Product[]> {
     return this.productsRepository.find();
   }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Put } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -12,7 +12,7 @@ export class ProductsController {
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() createProductDto: any,
-    @UploadedFile() file: Express.MulterFile, // ใช้ type ที่กำหนดเอง
+    @UploadedFile() file: Express.MulterFile,
   ) {
     return this.productsService.create(createProductDto, file);
   }
@@ -48,5 +48,14 @@ export class ProductsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
+  }
+
+  @Put(':id/upload-image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.MulterFile,
+  ) {
+    return this.productsService.uploadImage(+id, file);
   }
 }
